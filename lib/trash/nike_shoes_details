@@ -1,0 +1,146 @@
+import 'package:flutter/material.dart';
+import 'package:nike_shoes/nike_shoes_store_app/main_nike_shoes_store_app.dart';
+import 'package:nike_shoes/nike_shoes_store_app/nike_shoes.dart';
+import 'package:nike_shoes/nike_shoes_store_app/nike_shopping_cart.dart';
+
+class NikeShoesDetails extends StatelessWidget {
+  const NikeShoesDetails({super.key, required this.shoe});
+  final NikeShoes shoe;
+
+  @override
+  Widget build(BuildContext context) {
+    ValueNotifier bouttonsNotifier = ValueNotifier(false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bouttonsNotifier.value = true;
+    });
+    final size = MediaQuery.of(context).size;
+
+    Widget buildCarousel() {
+      return SizedBox(
+        height: size.height * .5,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Hero(
+                tag: "background_${shoe.model}",
+                child: Container(
+                  color: Color(shoe.color),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: ShakeTransition(
+                axis: Axis.vertical,
+                duration: const Duration(milliseconds: 1400),
+                offset: 60,
+                child: Hero(
+                  tag: "model_${shoe.model}",
+                  child: Material(
+                    color: Colors.transparent,
+                    child: FittedBox(
+                      child: Text(
+                        shoe.modelNumber.toInt().toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: size.height * .3,
+                            color: Colors.black12),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            PageView.builder(
+                itemCount: shoe.images.length,
+                itemBuilder: (context, i) {
+                  return Container(
+                    alignment: Alignment.center,
+                    child: ShakeTransition(
+                      duration: const Duration(milliseconds: 1200),
+                      child: Hero(
+                        tag: "image_${shoe.model}",
+                        child: Image.asset(
+                          shoe.images[i],
+                          height: size.height * .6,
+                          width: size.width * .6,
+                        ),
+                      ),
+                    ),
+                  );
+                })
+          ],
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        leading: const BackButton(
+          color: Colors.black,
+        ),
+        title: Image.asset(
+          "assets/nike_shoes_store/nike_logo.png",
+          height: 40,
+        ),
+        centerTitle: true,
+      ),
+      body: ValueListenableBuilder(
+          valueListenable: bouttonsNotifier,
+          builder: (context, value, child) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [buildCarousel()],
+                )),
+                AnimatedPositioned(
+                    duration: const Duration(milliseconds: 600),
+                    bottom: value ? 0 : -kToolbarHeight,
+                    left: 0,
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          FloatingActionButton(
+                            heroTag: "tag_1",
+                            backgroundColor: Colors.white,
+                            onPressed: () {},
+                            child: const Icon(
+                              Icons.favorite,
+                              color: Colors.black,
+                            ),
+                          ),
+                          FloatingActionButton(
+                            backgroundColor: Colors.black,
+                            heroTag: "tag_2",
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                      opaque: false,
+                                      pageBuilder: (context, animation, _) {
+                                        return NikeShoppingCart(
+                                            shoesItem: shoe);
+                                      }));
+                            },
+                            child: const Icon(
+                              Icons.shopping_cart,
+                            ),
+                          )
+                        ],
+                      ),
+                    )),
+              ],
+            );
+          }),
+    );
+  }
+}
