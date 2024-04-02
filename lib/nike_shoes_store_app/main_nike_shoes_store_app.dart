@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nike_shoes/nike_shoes_store_app/nike_shoes.dart';
 
 class MainNikeShoesStore extends StatelessWidget {
   const MainNikeShoesStore({super.key});
@@ -22,7 +23,7 @@ class NikeShoesStoreHome extends StatelessWidget {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(40.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -30,6 +31,11 @@ class NikeShoesStoreHome extends StatelessWidget {
                     "assets/nike_shoes_store/nike_logo.png",
                     height: 40,
                   ),
+                  Expanded(child: ListView.builder(
+                    itemCount: shoes.length,
+                    itemBuilder: (context, i) {
+                    return NikeShoesItem(shoesItem: shoes[i]);
+                  }))
                 ],
               ),
             ),
@@ -40,18 +46,45 @@ class NikeShoesStoreHome extends StatelessWidget {
                 height: kToolbarHeight,
                 child: Container(
                   color: Colors.white10,
-               
                   child: const Row(
                     children: [
                       Expanded(child: Icon(Icons.home)),
                       Expanded(child: Icon(Icons.search)),
                       Expanded(child: Icon(Icons.favorite)),
                       Expanded(child: Icon(Icons.shopping_bag)),
-                      Expanded(child: CircleAvatar(backgroundColor: Colors.amber,radius: 13,),),
+                      Expanded(
+                        child: CircleAvatar(
+                          backgroundColor: Colors.amber,
+                          radius: 13,
+                        ),
+                      ),
                     ],
                   ),
                 ))
           ],
         ));
+  }
+}
+
+class NikeShoesItem extends StatelessWidget {
+  const NikeShoesItem({super.key, required this.shoesItem});
+  final NikeShoes shoesItem;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top:20.0),
+      child: SizedBox(
+        height: 160,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Container(
+              color: Color(shoesItem.color),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
