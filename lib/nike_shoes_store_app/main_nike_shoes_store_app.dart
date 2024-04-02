@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:nike_shoes/nike_shoes_store_app/nike_shoes.dart';
 
 class MainNikeShoesStore extends StatelessWidget {
@@ -31,11 +32,12 @@ class NikeShoesStoreHome extends StatelessWidget {
                     "assets/nike_shoes_store/nike_logo.png",
                     height: 40,
                   ),
-                  Expanded(child: ListView.builder(
-                    itemCount: shoes.length,
-                    itemBuilder: (context, i) {
-                    return NikeShoesItem(shoesItem: shoes[i]);
-                  }))
+                  Expanded(
+                      child: ListView.builder(
+                          itemCount: shoes.length,
+                          itemBuilder: (context, i) {
+                            return NikeShoesItem(shoesItem: shoes[i]);
+                          }))
                 ],
               ),
             ),
@@ -72,16 +74,55 @@ class NikeShoesItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const itemHeight = 280.0;
     return Padding(
-      padding: const EdgeInsets.only(top:20.0),
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: SizedBox(
-        height: 160,
+        height: itemHeight,
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Container(
-              color: Color(shoesItem.color),
-            )
+            Positioned.fill(
+                child: Container(
+              decoration: BoxDecoration(
+                  color: Color(shoesItem.color),
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
+            )),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+              height: itemHeight*0.7,
+              child: FittedBox(child: Text(shoesItem.modelNumber.toString(),style: TextStyle(color: Colors.black.withOpacity(0.05)),)),
+            ),),
+            Positioned(
+              top: 20,
+              left: 100,
+                child: Image.asset(
+              shoesItem.images[0],
+              height: itemHeight * 0.7,
+            ),),
+            const Positioned(
+              bottom: 20,
+              left: 20,
+              right: 20,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.favorite_border_outlined, color: Colors.grey,),
+                  Icon(Icons.shopping_cart_outlined, color: Colors.grey),
+                ],
+              )),
+
+              Positioned(
+                bottom: 25,
+                right: 0,
+                left: 0,
+                child: Column(
+                children: [
+                  Text(shoesItem.model, style: TextStyle(color: Colors.grey,fontSize: 15 ),)
+                ],
+              ))
+
           ],
         ),
       ),
